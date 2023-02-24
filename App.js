@@ -7,10 +7,12 @@
 //  */
 
 import React, { useEffect } from "react";
+import {Provider} from 'react-redux';
+import configureStore from "./Screens/redux/store";
 
 import { NavigationContainer } from "@react-navigation/native";
 import RequestLogin from "./Screens/Requestlogin";
-import { Text, View } from "react-native";
+import { Text, View , Linking } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Scanqrcode from "./Screens/Scanqrcode";
 import Login from "./Screens/Login";
@@ -18,12 +20,99 @@ import Completation from "./Screens/Completation";
 import Declaration from "./Screens/Declaration";
 import Profile from "./Screens/Profile";
 import Basicinformation from "./Screens/Basicinformation";
+import base64 from 'react-native-base64'
 
 const Stack = createNativeStackNavigator();
 
+const store = configureStore();
+
 const App = () => {
+
+const linking = {
+  prefixes: ["https://fill-easy.com/", 'fill-easy://'],
+};
+
+
+const clientHeaders = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+  "x-client-id": 'cd89d333a7ec42d288421971dfb02d1d', //'1-client-id',
+  "x-client-secret": '9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673' //'1-client-secret', // optional
+  // "wildcard-client-id": "bc6c7e1fd9bb4278"
+}
+
+function getStringBetween(str, start, end) {
+  const result = str.match(new RegExp(start + "(.*)" + end));
+
+  return result[1];
+}
+
+useEffect(() => {
+  Linking.addEventListener('url', (url) => {
+    linkUrl = url.url;
+    console.log('this is the url: ', linkUrl);
+
+    if (linkUrl.includes('code')) {
+      let mySubString = getStringBetween(linkUrl, 'code=', '&state')
+      console.log("Substring", mySubString);
+      ObtainEmeAnonResults(mySubString);
+    }
+  });
+}, []);
+
+
+const ObtainEmeAnonResults = async (authCode) => {
+  const url = `https://dev.fill-easy.com/iamsmart/redirect/user/formfilling-anonymous/${wildcard_client_id}?code=` + authCode + '&source=mobile';
+  console.log(url);
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: clientHeaders,
+    })
+
+    const json = await response.text();
+    console.log("callback object", json);
+    let obj = JSON.parse(json);
+    let codedArray = [];
+    let docArray = [];
+    codedArray = obj.auth.split('.');
+    docArray = obj.formFilling.split('.');
+    if (codedArray.length > 2) {
+      console.log("Decoded 1", base64.decode(codedArray[1]))
+      console.log("Decoded 2", base64.decode(docArray[1]))
+    }
+    if (obj.status == 200) {
+      // dispatch({
+      //   type: "SET_PROFILE_TOKEN",
+      //   payload: codedArray[1],
+      // });
+      // dispatch({
+      //   type: "SET_DOC_TOKEN",
+      //   payload: docArray[1],
+      // });
+      // dispatch({
+      //   type: "INACTIVATE_LOADER",
+      // });
+    } else {
+      Alert.alert(
+        "Auth TOKEN STATUS",
+        "Error Occured",
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      )
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    // setLoading(false);
+  }
+}
+
+
   return (
-    <NavigationContainer>
+    <Provider store={store}>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
        initialRouteName="Requestlogin"
@@ -40,6 +129,7 @@ const App = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 };
 

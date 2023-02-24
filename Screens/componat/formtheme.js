@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const Formtheme = ({ children, text, bottomtext }) => {
+const Formtheme = ({ children, text, bottomtext , handlenav }) => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
 
   const navigation = useNavigation();
@@ -156,9 +156,11 @@ const Formtheme = ({ children, text, bottomtext }) => {
               }}
               onPress={() => {
                 if (bottomtext == "Sign with iAM Smart") {
-                  navigation.navigate("Completation");
+                  
+                 navigation.navigate("Completation");
                 } else {
-                  navigation.navigate("Declaration");
+                  handlenav()
+                 // navigation.navigate("Declaration");
                 }
               }}
             >
