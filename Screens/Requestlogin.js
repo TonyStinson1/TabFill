@@ -131,7 +131,7 @@ const RequestLogin = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 flexDirection: "row",
                 height: 65,
@@ -155,7 +155,7 @@ const RequestLogin = () => {
               >
                 Login with iAM Smart
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
         <View style={{ width: "60%" }}>

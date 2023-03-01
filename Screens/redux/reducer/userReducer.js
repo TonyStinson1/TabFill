@@ -1,7 +1,7 @@
 const initialState = {
     profileToken: '',
     authToken: '',
-    docToken: {},
+    signToken: '',
     loader: false,
 };
 
@@ -13,8 +13,8 @@ function userReducer(state = initialState, action) {
         case 'SET_AUTH_TOKEN':
             return { ...state, authToken: action.payload }
 
-        case 'SET_DOC_TOKEN':
-            return { ...state, docToken: action.payload }
+        case 'SET_SIGN_TOKEN':
+            return { ...state, signToken: action.payload }
 
         case 'ACTIVATE_LOADER':
             return { ...state, loader: true }

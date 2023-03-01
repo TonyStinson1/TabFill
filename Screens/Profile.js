@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,10 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Formtheme from "./componat/formtheme";
+import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
   const [cname, setCname] = useState("");
@@ -23,34 +26,35 @@ const Profile = () => {
   const [number, setNumber] = useState("");
   const [billadd, setBilladd] = useState("");
 
-  function redirectToIams(url) {
-    // dispatch({
-    //   type: "ACTIVATE_LOADER",
-    // });
-    // navigation.goBack();
-    Linking.openURL(url);
-  }
+  const data = useSelector(state => state);
 
-  const clientHeaders = {
-    //   Accept: "application/json",
-    'x-client-id': 'cd89d333a7ec42d288421971dfb02d1d',
-    'x-client-secret': '9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673',
-    'Content-Type': 'application/json'
-    // "wildcard-client-id": "50c5be6566d34b34"
+  const dispatch = useDispatch();
+
+  const profileToken = useSelector((state) => state.userInfo.profileToken);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if(profileToken && profileToken.length > 0) {
+      navigation.navigate('Basicinformtion');
+    }
+  }, [profileToken]);
+
+  function redirectToIams(url) {
+    Linking.openURL(url);
   }
 
   const requestEmeAnon = async () => {
 
     var myHeaders = new Headers();
-    myHeaders.append("x-client-id", "2588100d923d4af382b6c4033b086419");
-    myHeaders.append("x-client-secret", "21dd677be8984d0b836ac00304803709abd7ac0cb16e4151b539b88029219356");
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
       "scope": "eidapi_auth eidapi_formFilling",
       "lang": "en-US",
       "source": "PC_Browser",
-      "redirect": "http://liquid.com.hk",
+      "redirect": "fill-easy-demo://eme/",
       "profileFields": [
         "idNo",
         "enName",
@@ -85,46 +89,24 @@ const Profile = () => {
       redirect: 'follow'
     };
 
-    fetch("https://testing.fill-easy.com/iamsmart/request/eme-anonymous", requestOptions)
+    fetch("https://dev.fill-easy.com/iamsmart/request/eme-anonymous", requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
+      .then(result =>{
+        const res =   JSON.parse(result)
+        const token = res?.token
+        const url = res?.url;
+        console.log("Response for 1st api", res);
+        dispatch({
+          type : "SET_AUTH_TOKEN",
+          payload : token
+        })
+        console.log("Token data", token);
+        AsyncStorage.setItem("@token" , token);
+
+
+        redirectToIams(url);
+      })
       .catch(error => console.log('error', error));
-
-    // try {
-    //   const response = await fetch('https://dev.fill-easy.com/iamsmart/request/signing-anonymous', {
-    //     method: "POST",
-    //     headers: clientHeaders,
-    //     body: JSON.stringify({
-    //       'lang': 'en-US',
-    //     'scope': 'eidapi_auth eidapi_formFilling eidapi_sign eidapi_fr',
-    //     'source': 'android',
-    //     'redirect': 'https://www.google.com/',
-    //     'name': 'Credit Card Application Form',
-    //     'hkicHash': 'c913c226c44240d29854783a3ff33c0b2e8ed1136224fb8f537716ef003c2b70',
-    //     'fileHash': 'af8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a912930019301',
-    //     'service': 'Digital Signing of Supplementary Card Application Form by fill-easy'
-    //     })
-    //   })
-    //   console.log("Response", response);
-    //   const json = await response.text();
-    //   // console.log(json);
-    //   let token = JSON.parse(json).token;
-    //   let url = JSON.parse(json).url;
-    //   console.log('eme token: ' + token);
-    //   console.log('url: ' + url);
-    //   // // setEmeAnonToken(token);
-    //   // // setEmeAnonURL(url);
-
-    //   if (url) {
-    //     redirectToIams(url);
-    //   } else {
-    //     console.log('ticketID is null');
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   // setLoading(false);
-    // }
   }
 
   return (

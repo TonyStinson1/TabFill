@@ -32,7 +32,7 @@ import { useNavigation } from '@react-navigation/native';
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 const Completation = () => {
-  console.log("^^^^^", width, height, wp(5));
+  // console.log("^^^^^", width, height, wp(5));
 
   const navigation = useNavigation();
 

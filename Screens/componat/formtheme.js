@@ -155,7 +155,7 @@ const Formtheme = ({ children, text, bottomtext , handlenav }) => {
                 justifyContent: "center",
               }}
               onPress={() => {
-                if (bottomtext == "Sign with iAM Smart") {
+                if (bottomtext == "Auto with iAM Smart") {
                   
                  navigation.navigate("Completation");
                 } else {

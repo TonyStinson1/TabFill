@@ -28,7 +28,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="fill-easy-demo" />
+                <data android:scheme="fill-easy-demo" android:host="eme" />
+                <data android:scheme="fill-easy-demo" android:host="sign" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

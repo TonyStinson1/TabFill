@@ -10,19 +10,12 @@ import {
 } from "react-native";
 import Formtheme from "./componat/formtheme";
 import Slider from "react-native-slider";
+import { useSelector } from "react-redux";
 //import Slider from "@react-native-community/slider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const Basicinformation = () => {
-  const [cname, setCname] = useState("");
-  const [ename, setEname] = useState("");
-  const [cardnumber, setCardnumber] = useState("");
-  const [education, setEducation] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [maritial, setMaritial] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [number, setNumber] = useState("");
-  const [billadd, setBilladd] = useState("");
 
   const [value, setValue] = useState(96000);
 
@@ -49,10 +42,82 @@ const Basicinformation = () => {
     setval4(f);
   }, [minval]);
 
+  const profileToken = useSelector((state) => state.userInfo.profileToken);
+  const [decodedData, setDecodedData] = useState({});
+  const [loader1, setLoader1] = useState(true);
+  const navigation = useNavigation();
+
+  function getStringBetween(str, start, end) {
+    const result = str.match(new RegExp(start + "(.*)" + end));
+
+    return result[1];
+  }
+
+  useEffect(() => {
+    if (profileToken && profileToken.length > 0) {
+      let data = atob1(profileToken);
+      console.log("Profile Data ", data);
+      let prof, prof1;
+      if (data.length > 0) {
+        let stringData = data.slice(0, -31);
+        prof = getStringBetween(stringData, '"HS256"}', "");
+        console.log("Data from stirng between", prof);
+        prof = prof.slice(0, -1);
+        prof1 = JSON.parse(prof);
+        console.log("Decoded prof data", JSON.stringify(prof1));
+      }
+      setDecodedData(prof1.formFilling);
+    }
+  }, []);
+
+  const birthDayConverter = (dateString) => {
+    let year = dateString.substring(0, 4);
+    let month = dateString.substring(4, 6);
+    let day = dateString.substring(6, 8);
+
+    let date = new Date(year, month - 1, day);
+    console.log("Date length", date.toDateString());
+    return date.toDateString();
+  }
+
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+  const atob1 = (input = '') => {
+    let str = input.replace(/=+$/, '');
+    let output = '';
+
+    if (str.length % 4 == 1) {
+      throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
+    }
+    for (let bc = 0, bs = 0, buffer, i = 0;
+      buffer = str.charAt(i++);
+
+      ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
+        bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
+    ) {
+      buffer = chars.indexOf(buffer);
+    }
+
+    return output;
+  }
+
+  const residentialFormat = (home) => {
+    let reformat = `${home.EngPremisesAddress.Eng3dAddress.EngUnit.UnitNo}, ${home.EngPremisesAddress.BuildingName}, ${home.EngPremisesAddress.EngDistrict.DcDistrict}, ${home.EngPremisesAddress.Region}`
+    return reformat;
+  }
+
+  const { enName, idNo, gender, educationLevel,
+    residentialAddress, birthDate, emailAddress,
+    maritalStatus, mobileNumber, postalAddress } = decodedData;
+
+  const navToDeclare = () => {
+    navigation.navigate('Declaration');
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Formtheme text={"Basic Informations"}
-      bottomtext={"Submit with iAM Smart"}>
+        bottomtext={"Next"} handlenav={navToDeclare} >
         <View style={{ flex: 1, paddingHorizontal: 50, marginTop: -50 }}>
           <ScrollView style={{ flex: 1, marginBottom: 160 }}>
             <View style={{ flex: 1 }}>
@@ -69,8 +134,9 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={cname}
-                      onChangeText={(text) => setCname(text)}
+                      value={''}
+                      editable={false}
+                      // onChangeText={(text) => setCname(text)}
                       style={styles.inputtext}
                     />
                   </View>
@@ -87,8 +153,9 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={ename}
-                      onChangeText={(text) => setEname(text)}
+                      value={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? enName?.UnstructuredName : ''}
+                      editable={false}
+                      // onChangeText={(text) => setEname(text)}
                       style={styles.inputtext}
                     />
                   </View>
@@ -103,22 +170,22 @@ const Basicinformation = () => {
                   style={styles.smartimage}
                 />
                 <TouchableOpacity>
-                  <Text style={styles.title}> F</Text>
+                  <Text style={gender == 'F' ? { ...styles.title, ...styles.selected, } : { ...styles.title }}> F</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}> /</Text>
                 <TouchableOpacity>
-                  <Text style={styles.title}> M </Text>
+                  <Text style={gender == 'M' ? { ...styles.title, ...styles.selected, } : { ...styles.title }}> M </Text>
                 </TouchableOpacity>
                 <Text style={styles.title}> /</Text>
                 <TouchableOpacity>
-                  <Text style={styles.title}> X </Text>
+                  <Text style={gender == 'X' ? { ...styles.title, ...styles.selected, } : { ...styles.title }}> X </Text>
                 </TouchableOpacity>
               </View>
 
               {/* Card numebr and education  */}
               <View style={{ flexDirection: "row", marginTop: 15 }}>
                 {/*Card number */}
-                <View style={{width:"40%"}}>
+                <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>
                       Hong Kong Identity Card number* :
@@ -131,14 +198,15 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={cardnumber}
-                      onChangeText={(text) => setCardnumber(text)}
+                      value={idNo?.Identification && idNo?.Identification.length > 0 ? `${idNo?.Identification}-(${idNo?.CheckDigit})` : ''}
+                      editable={false}
+                      // onChangeText={(text) => setCardnumber(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
                 </View>
                 {/* Education level */}
-                <View style={{ marginLeft: 25,width:"40%" }}>
+                <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Education level* :</Text>
                     <Image
@@ -149,8 +217,9 @@ const Basicinformation = () => {
                   <View style={{ ...styles.inputView }}>
                     <TextInput
                       placeholder=""
-                      value={education}
-                      onChangeText={(text) => setEducation(text)}
+                      editable={false}
+                      value={educationLevel && educationLevel.length > 0 ? educationLevel : ''}
+                      // onChangeText={(text) => setEducation(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -161,7 +230,7 @@ const Basicinformation = () => {
 
               <View style={{ flexDirection: "row", marginTop: 15 }}>
                 {/* DOB */}
-                <View style={{width:"40%"}}>
+                <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Date of birth* :</Text>
                     <Image
@@ -172,14 +241,15 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={birthdate}
-                      onChangeText={(text) => setBirthdate(text)}
+                      value={birthDate && birthDate.length > 0 ? birthDayConverter(birthDate) : ''}
+                      editable={false}
+                      // onChangeText={(text) => setBirthdate(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
                 </View>
                 {/*  Marital status */}
-                <View style={{ marginLeft: 25 ,width:"40%"}}>
+                <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Marital status* :</Text>
                     <Image
@@ -190,8 +260,9 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={maritial}
-                      onChangeText={(text) => setMaritial(text)}
+                      value={maritalStatus && maritalStatus.length > 0 ? maritalStatus : ''}
+                      editable={false}
+                      // onChangeText={(text) => setMaritial(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -200,7 +271,7 @@ const Basicinformation = () => {
               {/* Email and address */}
               <View style={{ flexDirection: "row", marginTop: 15 }}>
                 {/* Email */}
-                <View style={{width:"40%"}}>
+                <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Email* :</Text>
                     <Image
@@ -211,14 +282,15 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={email}
-                      onChangeText={(text) => setEmail(text)}
+                      value={emailAddress && emailAddress.length > 0 ? emailAddress : ''}
+                      editable={false}
+                      // onChangeText={(text) => setEmail(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
                 </View>
                 {/* Residential address */}
-                <View style={{ marginLeft: 25 ,width:"40%"}}>
+                <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Residential address* :</Text>
                     <Image
@@ -229,8 +301,9 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={address}
-                      onChangeText={(text) => setAddress(text)}
+                      value={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(residentialAddress) : ''}
+                      editable={false}
+                      // onChangeText={(text) => setAddress(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -239,7 +312,7 @@ const Basicinformation = () => {
 
               <View style={{ flexDirection: "row", marginTop: 15 }}>
                 {/* Number */}
-                <View style={{width:"40%"}}>
+                <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Mobile phone number* :</Text>
                     <Image
@@ -250,16 +323,17 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={number}
-                      onChangeText={(text) => setNumber(text)}
+                      editable={false}
+                      value={mobileNumber && mobileNumber.SubscriberNumber.length > 0 ? `${mobileNumber.CountryCode} - ${mobileNumber.SubscriberNumber}` : ''}
+                      // onChangeText={(text) => setNumber(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
                 </View>
                 {/* Billing address */}
-                <View style={{ marginLeft: 25,width:"40%" }}>
+                <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Education level* :</Text>
+                    <Text style={styles.title}>Billing address* :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -268,8 +342,9 @@ const Basicinformation = () => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={education}
-                      onChangeText={(text) => setEducation(text)}
+                      editable={false}
+                      value={postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(postalAddress) : ''}
+                      // onChangeText={(text) => setEducation(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -308,7 +383,7 @@ const Basicinformation = () => {
                   alignItems: "center",
                 }}
               >
-               
+
                 <View style={{ width: "70%" }}>
                   <Slider
                     value={value}
@@ -366,7 +441,7 @@ const Basicinformation = () => {
                           color: "black",
                         }}
                       >
-                       {val2}
+                        {val2}
                       </Text>
                     </View>
 
@@ -379,7 +454,7 @@ const Basicinformation = () => {
                           color: "black",
                         }}
                       >
-                       {val3}
+                        {val3}
                       </Text>
                     </View>
 
@@ -392,7 +467,7 @@ const Basicinformation = () => {
                           color: "black",
                         }}
                       >
-                       {val4}
+                        {val4}
                       </Text>
                     </View>
                     {/* <Text style={{ fontSize: 25 }}>{val2}</Text> */}
@@ -465,6 +540,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#424242",
   },
+  selected: {
+    fontWeight: 'bold',
+    textDecorationLine: 'underline'
+  },
   smartimage: { width: 18, height: 23, marginLeft: 5 },
   inputView: {
     height: 54,
@@ -472,5 +551,5 @@ const styles = StyleSheet.create({
     borderColor: "#707070",
     marginTop: 20,
   },
-  inputtext: { color: "black", fontSize: 18,marginLeft:25 },
+  inputtext: { color: "black", fontSize: 18, marginLeft: 25 },
 });
