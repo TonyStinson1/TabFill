@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Formtheme from "./componat/formtheme";
+import Formtheme from "./Component/formtheme";
 import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {

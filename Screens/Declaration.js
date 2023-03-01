@@ -1,22 +1,91 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, Linking } from "react-native";
-import { useDispatch } from "react-redux";
-import Formtheme from "./componat/formtheme";
+import { View, Text, Button, TouchableOpacity, ScrollView, Linking, StyleSheet, Image } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import Formtheme from "./Component/formtheme";
+import { Modals } from "./Component/ModalPop";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import Modal from "react-native-modal";
 
 const Declaration = () => {
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [tick, setTick] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const signToken = useSelector((state) => state.userInfo.signToken);
 
   function redirectToIams(url) {
     Linking.openURL(url);
   }
 
+  const ModalPop = () => {
+    return (
+      <Modal isVisible={isModalVisible}>
+        <Modals.Container>
+          <View style={{ height: '15%', justifyContent: 'center', backgroundColor: '#c49b33' }}>
+            <Modals.Header title='Sign your application with "iAM SMART"' />
+          </View>
+          <View style={{ ...styles.modal, width: '100%', height: '70%' }}>
+            <View style={{ marginLeft: 30, marginTop: 25, flexDirection: 'row' }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold' }}>Service name: </Text>
+              </View>
+              <View>
+                <Text style={{ color: '#000', fontSize: 20, }}>Loan application form </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 20, flexDirection: 'row' }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold' }}>Document: </Text>
+              </View>
+              <View>
+                <Text style={{ color: '#000', fontSize: 20, }}>From 198B </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 20, flexDirection: 'row' }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold' }}>Identification code: </Text>
+              </View>
+              <View>
+                <Text style={{ color: '#49877c', fontSize: 22, fontWeight: 'bold' }}>5415 </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 20, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>Please follow the steps below: </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#49877c', fontSize: 18, }}>1. Open "iAM Smart" app in your mobile device </Text>
+              </View>
+              <View style={{ marginTop: 10, marginLeft: 20 }}>
+              <Image source={require("../assets/clickapp.png")}
+                      style={{ width: 35, height: 35, resizeMode: 'contain' }} />
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>2. Tap on "To Sign" </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>3. Make sure the identification code shown in "iAM Smart" is the same and tap on "Sign to complete the digital signing" </Text>
+              </View>
+            </View>
+          </View>
+        </Modals.Container>
+      </Modal>
+    )
+  }
+
   useEffect(() => {
-    if(signToken && signToken.length > 0) {
-      navigation.navigate('Completation');
+    if (signToken && signToken.length > 0) {
+      setModalVisible(false);
+      setTimeout(() => {
+        navigation.navigate('Completation');
+      }, 1500);
     }
   }, [signToken]);
 
@@ -62,10 +131,23 @@ const Declaration = () => {
       .catch(error => console.log('error', error));
   }
 
+  const toggleModal = () => {
+    setModalVisible(true)
+    setTimeout(() => {
+      requestSignAnon();
+    }, 10000)
+  }
+
+  if (isModalVisible) {
+    return (
+      <ModalPop />
+    )
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Formtheme text={"Declaration"}
-        bottomtext={"Sign with iAM Smart"} handlenav={requestSignAnon} >
+        bottomtext={"Sign with iAM Smart"} handlenav={toggleModal} disabled={!tick} >
 
         <View style={{ paddingHorizontal: 50 }}>
           {/* <Text>Please click the<TouchableOpacity><Text>Personal Loan Application Declaration</Text></TouchableOpacity></Text> */}
@@ -177,5 +259,20 @@ const Declaration = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "400",
+    textAlign: "center",
+  },
+  modal: {
+    height: "60%",
+  },
+});
 
 export default Declaration;

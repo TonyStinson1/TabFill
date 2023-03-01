@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const Formtheme = ({ children, text, bottomtext , handlenav }) => {
+const Formtheme = ({ children, text, bottomtext, handlenav, disabled = false }) => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
 
   const navigation = useNavigation();
@@ -154,13 +154,14 @@ const Formtheme = ({ children, text, bottomtext , handlenav }) => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
+              disabled={disabled}
               onPress={() => {
                 if (bottomtext == "Auto with iAM Smart") {
-                  
-                 navigation.navigate("Completation");
+
+                  navigation.navigate("Completation");
                 } else {
                   handlenav()
-                 // navigation.navigate("Declaration");
+                  // navigation.navigate("Declaration");
                 }
               }}
             >

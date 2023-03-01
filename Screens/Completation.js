@@ -51,7 +51,7 @@ const Completation = () => {
         locations={[0, 0.4]}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 1, width: "100%", height: "100%",flexDirection:"row" }}>
+        <View style={{ flex: 1, width: "100%", height: "100%", flexDirection: "row" }}>
           <View style={{ width: "40%", padding: "5%" }}>
             <Image
               source={require("../assets/card.png")}
@@ -60,7 +60,7 @@ const Completation = () => {
 
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text
-                style={{ fontSize: 58, fontFamily:"PTSans-Bold", color: "white" }}
+                style={{ fontSize: 58, fontFamily: "PTSans-Bold", color: "white" }}
               >
                 Application Form Sent!
               </Text>
@@ -78,15 +78,15 @@ const Completation = () => {
                     backgroundColor: "#891eff",
                     alignItems: "center",
                     justifyContent: "center",
-                    height:65,
-                  //  paddingVertical: 15,
+                    height: 65,
+                    //  paddingVertical: 15,
                     borderRadius: 33,
                   }}
                 >
                   <Text
                     style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
                   >
-                    Download.pdf
+                    View Status
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -96,10 +96,13 @@ const Completation = () => {
                     borderColor: "white",
                     alignItems: "center",
                     justifyContent: "center",
-                    height:65,
+                    height: 65,
                     borderRadius: 33,
                   }}
-                  onPress={()=>navigation.goBack()}
+                  onPress={() => navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Requestlogin' }],
+                  })}
                 >
                   <Text
                     style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
@@ -201,8 +204,8 @@ const Completation = () => {
                   source={require("../assets/complete.png")}
                   style={{ width: 351, height: 351 }}
                 />
-                <TouchableOpacity style={{marginLeft:70}}>
-                  <Text style={{fontSize:18,fontFamily:"PTSans-Regular",color:"#67A4E4",textDecorationLine:"underline"}}>applicants.loanform.pdf</Text>
+                <TouchableOpacity style={{ marginLeft: 70 }}>
+                  <Text style={{ fontSize: 18, fontFamily: "PTSans-Regular", color: "#67A4E4", textDecorationLine: "underline" }}>applicants.loanform.pdf</Text>
                 </TouchableOpacity>
               </View>
             </View>

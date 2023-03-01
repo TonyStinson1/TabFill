@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import Formtheme from "./componat/formtheme";
+import Formtheme from "./Component/formtheme";
 import Slider from "react-native-slider";
 import { useSelector } from "react-redux";
 //import Slider from "@react-native-community/slider";
