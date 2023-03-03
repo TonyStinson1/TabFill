@@ -31,6 +31,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const profileToken = useSelector((state) => state.userInfo.profileToken);
+  
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -96,10 +97,6 @@ const Profile = () => {
         const token = res?.token
         const url = res?.url;
         console.log("Response for 1st api", res);
-        dispatch({
-          type : "SET_AUTH_TOKEN",
-          payload : token
-        })
         console.log("Token data", token);
         AsyncStorage.setItem("@token" , token);
 

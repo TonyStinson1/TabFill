@@ -7,20 +7,22 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Formtheme from "./Component/formtheme";
 import Slider from "react-native-slider";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 //import Slider from "@react-native-community/slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
-const Basicinformation = () => {
+const Basicinformation = ({ route }) => {
 
   const [value, setValue] = useState(96000);
-
+  const { token } = route.params;
   const [minval, setMinval] = useState(96000);
   const [maxval, setMaxval] = useState(1100000);
+  const [loader, setLoader] = useState(false);
 
   const [val2, setVal2] = useState();
   const [val3, setVal3] = useState();
@@ -43,6 +45,7 @@ const Basicinformation = () => {
   }, [minval]);
 
   const profileToken = useSelector((state) => state.userInfo.profileToken);
+  const normProfileToken = useSelector((state) => state.userInfo.normProfileToken);
   const [decodedData, setDecodedData] = useState({});
   const [loader1, setLoader1] = useState(true);
   const navigation = useNavigation();
@@ -52,6 +55,33 @@ const Basicinformation = () => {
 
     return result[1];
   }
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    let interval;
+    if (normProfileToken.length == 0) {
+      interval = setInterval(reqFromDetails, 1000);
+    } else {
+      let data = atob1(normProfileToken);
+      let prof, prof1;
+      if (data.length > 0) {
+        console.log("String data1", stringData);
+        let stringData = data.slice(0, -31);
+        console.log("String data2", stringData);
+        console.log("String data last character", stringData[stringData.length - 1]);
+        prof = getStringBetween(stringData, '"HS256"}', "}}}}}}");
+        // console.log("Data from stirng between", prof);
+        prof = prof + "}}}}}}"
+        prof1 = JSON.parse(prof);
+        console.log("Decoded prof data", JSON.stringify(prof1));
+        setDecodedData(prof1.Eme);
+      }
+    }
+    return () => {
+      clearInterval(interval);
+    }
+  }, [normProfileToken]);
 
   useEffect(() => {
     if (profileToken && profileToken.length > 0) {
@@ -68,7 +98,46 @@ const Basicinformation = () => {
       }
       setDecodedData(prof1.formFilling);
     }
-  }, []);
+  }, [])
+
+  const reqFromDetails = async () => {
+
+    var myHeaders = new Headers();
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "token": token
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://dev.fill-easy.com/iamsmart/callback/client", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        let obj = JSON.parse(result);
+        if (obj.status == 200) {
+          console.log("I got the prfile ", obj);
+          console.log("Object norm", obj.token);
+
+          setLoader(false);
+          dispatch({
+            type: "SET_NPROFILE_TOKEN",
+            payload: obj.token
+          });
+          return true;
+        }
+        setLoader(true);
+        return false;
+      })
+      .catch(error => console.log('error', error));
+  }
 
   const birthDayConverter = (dateString) => {
     let year = dateString.substring(0, 4);
@@ -111,9 +180,21 @@ const Basicinformation = () => {
     maritalStatus, mobileNumber, postalAddress } = decodedData;
 
   const navToDeclare = () => {
-    navigation.navigate('Declaration');
+    if(normProfileToken.length == 0) {
+      navigation.navigate('Declaration');
+    } else {
+      navigation.navigate('Declaration', { token1: token });
+    }
   }
 
+
+  if (loader) {
+    return (
+      <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </View>
+    )
+  }
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Formtheme text={"Basic Informations"}

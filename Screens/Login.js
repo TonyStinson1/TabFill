@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -20,6 +20,7 @@ import {
   //Dimensions,
   useWindowDimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -28,19 +29,73 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from "react-redux";
 
-const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
 const Login = () => {
-  console.log("^^^^^", width, height, wp(5));
 
   const navigation = useNavigation();
 
-  // useEffect(() =>{
-  //   const Dimension = useWindowDimensions()
+  const authToken = useSelector((state) => state.userInfo.authToken);
 
-  //   console.log("%%%%%%",Dimension);
-  // },[])
+  const requestEme = async () => {
+
+    var myHeaders = new Headers();
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "token": `${authToken}`,
+      "source": "PC_Browser",
+      "profileFields": [
+        "idNo",
+        "enName",
+        "chName",
+        "birthDate",
+        "gender"
+      ],
+      "formData": {
+        "formName": "Standard Chartered Credit Card Application Form",
+        "formDesc": "Application for Credit Card",
+        "formNum": "SC_001",
+        "formFields": [
+          "prefix",
+          "maritalStatus",
+          "homeTelNumber",
+          "officeTelNumber",
+          "mobileNumber",
+          "emailAddress",
+          "residentialAddress",
+          "postalAddress",
+          "educationLevel",
+          "addressDocInfo"
+        ]
+      }
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://dev.fill-easy.com/iamsmart/request/eme", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        console.log("Response for Profile norm api", res);
+        // console.log("Token data", token);
+        const token = res?.token;
+        // setLoader(true);
+        // redirectToIams(url);
+        if(res.status) {
+          navigation.navigate('Basicinformtion', { token: token })
+        }
+      })
+      .catch(error => console.log('error', error));
+  }
+
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
@@ -67,7 +122,7 @@ const Login = () => {
 
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text
-                style={{ fontSize: 58, fontFamily:"PTSans-Bold",color: "white" }}
+                style={{ fontSize: 58, fontFamily: "PTSans-Bold", color: "white" }}
               >
                 Login Completed!
               </Text>
@@ -88,10 +143,10 @@ const Login = () => {
                     paddingVertical: 15,
                     borderRadius: 33,
                   }}
-                  onPress={()=>navigation.navigate("Profile")}
+                  onPress={() => requestEme()}
                 >
                   <Text
-                    style={{ fontSize: 24,fontFamily:"PTSans-Bold", color: "white" }}
+                    style={{ fontSize: 24, fontFamily: "PTSans-Bold", color: "white" }}
                   >
                     Next
                   </Text>
@@ -108,7 +163,7 @@ const Login = () => {
                   }}
                 >
                   <Text
-                    style={{ fontSize: 24, fontFamily:"PTSans-Bold",color: "white" }}
+                    style={{ fontSize: 24, fontFamily: "PTSans-Bold", color: "white" }}
                   >
                     Back
                   </Text>
@@ -153,7 +208,7 @@ const Login = () => {
                     style={{
                       fontSize: 18,
                       color: "#FFFFFF",
-                      fontFamily:"PTSans-Bold"
+                      fontFamily: "PTSans-Bold"
                     }}
                   >
                     Banking
@@ -164,7 +219,7 @@ const Login = () => {
                     style={{
                       fontSize: 18,
                       color: "#FFFFFF",
-                      fontFamily:"PTSans-Bold"
+                      fontFamily: "PTSans-Bold"
                     }}
                   >
                     Creditcard
@@ -175,7 +230,7 @@ const Login = () => {
                     style={{
                       fontSize: 18,
                       color: "#FFFFFF",
-                      fontFamily:"PTSans-Bold"
+                      fontFamily: "PTSans-Bold"
                     }}
                   >
                     Loans
@@ -186,7 +241,7 @@ const Login = () => {
                     style={{
                       fontSize: 18,
                       color: "#FFFFFF",
-                      fontFamily:"PTSans-Bold"
+                      fontFamily: "PTSans-Bold"
                     }}
                   >
                     Profile

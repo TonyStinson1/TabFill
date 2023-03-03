@@ -30,8 +30,6 @@ const store = configureStore();
 
 const Rootnavigation = () => {
 
-    // const [stateToken, setStateToken] = useState('');
-
     const linking = {
         prefixes: ["https://fill-easy.com/", 'fill-easy-demo://'],
     };
@@ -45,6 +43,8 @@ const Rootnavigation = () => {
                 ObtainEmeAnonResults();
             } else if (url.url.includes('fill-easy-demo://') && url.url.includes('sign')) {
                 reqSignResults();
+            } else if (url.url.includes('fill-easy-demo://') && url.url.includes('auth')) {
+                ObtainEmeNormResults();
             }
         });
     }, []);
@@ -81,6 +81,44 @@ const Rootnavigation = () => {
                         type: "SET_PROFILE_TOKEN",
                         payload: obj.formFilling
                     });
+                }
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    const ObtainEmeNormResults = async () => {
+
+        const tokenasync = await AsyncStorage.getItem('@authtoken')
+        var myHeaders = new Headers();
+        myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+        myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        console.log("state ", tokenasync);
+
+        var raw = JSON.stringify({
+            "token": tokenasync
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("https://dev.fill-easy.com/iamsmart/callback/client", requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                console.log("Form filling profile for normal base 64 with permanent token", result);
+                let obj = JSON.parse(result);
+                if (obj.status == 200) {
+                    console.log("Rightfully added");
+                    dispatch({
+                        type: "SET_AUTH_TOKEN",
+                        payload: obj.token
+                    });
+                    AsyncStorage.setItem("@authenticate_token", obj.token);
                 }
             })
             .catch(error => console.log('error', error));
@@ -131,10 +169,10 @@ const Rootnavigation = () => {
                 initialRouteName="Requestlogin"
             // initialRouteName="Basicinformtion"
             >
-                <Stack.Screen name="login" component={Login} />
+                <Stack.Screen name="Requestlogin" component={RequestLogin} />
+                <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Declaration" component={Declaration} />
                 <Stack.Screen name="Completation" component={Completation} />
-                <Stack.Screen name="Requestlogin" component={RequestLogin} />
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="Basicinformtion" component={Basicinformation} />
                 <Stack.Screen

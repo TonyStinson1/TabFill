@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, TouchableOpacity, ScrollView, Linking, StyleSheet, Image } from "react-native";
+import { View, Text, Button, TouchableOpacity, ScrollView, Linking, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Formtheme from "./Component/formtheme";
 import { Modals } from "./Component/ModalPop";
@@ -7,12 +7,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import Modal from "react-native-modal";
 
-const Declaration = () => {
+const Declaration = ({ route }) => {
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [tick, setTick] = useState(false);
+  const { token1 } = route.params;
   const [isModalVisible, setModalVisible] = useState(false);
   const signToken = useSelector((state) => state.userInfo.signToken);
+  const normSignToken = useSelector((state) => state.userInfo.normSignToken);
+  const normProfileToken = useSelector((state) => state.userInfo.normProfileToken);
+
 
   function redirectToIams(url) {
     Linking.openURL(url);
@@ -60,8 +64,8 @@ const Declaration = () => {
                 <Text style={{ color: '#49877c', fontSize: 18, }}>1. Open "iAM Smart" app in your mobile device </Text>
               </View>
               <View style={{ marginTop: 10, marginLeft: 20 }}>
-              <Image source={require("../assets/clickapp.png")}
-                      style={{ width: 35, height: 35, resizeMode: 'contain' }} />
+                <Image source={require("../assets/clickapp.png")}
+                  style={{ width: 35, height: 35, resizeMode: 'contain' }} />
               </View>
             </View>
             <View style={{ marginLeft: 30, marginTop: 25, }}>
@@ -85,6 +89,10 @@ const Declaration = () => {
       setModalVisible(false);
       setTimeout(() => {
         navigation.navigate('Completation');
+      }, 1500);
+    } else if (normSignToken && normSignToken.length > 0) {
+      setModalVisible(false);
+      setTimeout(() => {
       }, 1500);
     }
   }, [signToken]);
@@ -131,11 +139,101 @@ const Declaration = () => {
       .catch(error => console.log('error', error));
   }
 
+  useEffect(() => {
+    let interval;
+    if (normSignToken.length > 0) {
+      interval = setInterval(reqNormSignResults, 1000);
+    }
+    return () => {
+      clearInterval(interval);
+    }
+  }, [normSignToken]);
+
+  const requestSign = async () => {
+
+    const tokenasync = await AsyncStorage.getItem('@authenticate_token')
+
+    console.log("Permanent auth tpoken", tokenasync);
+    var myHeaders = new Headers();
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+    var raw = JSON.stringify({
+      "token": `${tokenasync}`,
+      "source": "PC_Browser",
+      "name": "Credit Card Application Form",
+      "hash": "a642a0edd1f3f8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a9",
+      "service": "Digital Signing of Supplementary Card Application Form by fill-easy"
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://dev.fill-easy.com/iamsmart/request/signing", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        const token = res?.token;
+        console.log("Response for normal singing api", res);
+        console.log("Token data", token);
+        AsyncStorage.setItem("@authSigntoken", token);
+        dispatch({
+          type: "SET_NSIGN_TOKEN",
+          payload: res.token
+        });
+      })
+      .catch(error => console.log('error', error));
+  }
+
   const toggleModal = () => {
     setModalVisible(true)
     setTimeout(() => {
-      requestSignAnon();
+      if (token1 && token1.length > 0) {
+        requestSign();
+      } else {
+        requestSignAnon();
+      }
     }, 10000)
+  }
+
+  const reqNormSignResults = async () => {
+
+    const tokenasync = await AsyncStorage.getItem('@authSigntoken')
+    var myHeaders = new Headers();
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+    myHeaders.append("Content-Type", "application/json");
+
+    console.log("state ", tokenasync);
+
+    var raw = JSON.stringify({
+      "token": tokenasync
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://dev.fill-easy.com/iamsmart/callback/client", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        console.log("Sing data from last normal login", result);
+        let obj = JSON.parse(result);
+        if (obj.status == 200) {
+          console.log("Rightfully added normal api sign", obj);
+          setModalVisible(false);
+          navigation.navigate('Completation')
+        }
+      })
+      .catch(error => console.log('error', error));
   }
 
   if (isModalVisible) {

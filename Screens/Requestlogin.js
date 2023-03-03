@@ -9,30 +9,71 @@
 import React, { useEffect } from "react";
 import {
   Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   Dimensions,
   View,
-  //Dimensions,
-  useWindowDimensions,
   TouchableOpacity,
+  Linking,
 } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
+
 const RequestLogin = () => {
+
   const navigation = useNavigation();
+  const authToken = useSelector((state) => state.userInfo.authToken);
+
+  useEffect(() => {
+    if(authToken && authToken.length > 0) {
+      navigation.navigate('Login');
+    }
+  }, [authToken])
+
+  const requestLoginAnon = async () => {
+
+    var myHeaders = new Headers();
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "scope": "eidapi_auth eidapi_formFilling eidapi_sign eidapi_fr",
+      "lang": "en-US",
+      "source": "PC_Browser",
+      "redirect": "fill-easy-demo://auth/"
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://dev.fill-easy.com/iamsmart/request/qr", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        const token = res?.token
+        console.log("Response for Login token for check", token);
+        const url = res?.url;
+
+        AsyncStorage.setItem("@authtoken" , token);
+
+        redirectToIams(url);
+      })
+      .catch(error => console.log('error', error));
+  }
+
+  function redirectToIams(url) {
+    Linking.openURL(url);
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -131,7 +172,7 @@ const RequestLogin = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={{
                 flexDirection: "row",
                 height: 65,
@@ -142,7 +183,7 @@ const RequestLogin = () => {
                 alignItems: "center",
                 padding: 5,
               }}
-              onPress={() => navigation.navigate("Scanqrcode")}
+              onPress={() => requestLoginAnon()}
             >
               <Image source={require("../assets/ismart.png")} />
               <Text
@@ -155,7 +196,7 @@ const RequestLogin = () => {
               >
                 Login with iAM Smart
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{ width: "60%" }}>
@@ -219,7 +260,7 @@ const RequestLogin = () => {
               }}
             >
               <Text
-                style={{ fontSize: 24,fontFamily:"PTSans-Bold", color: "#6E84DB"}}
+                style={{ fontSize: 24, fontFamily: "PTSans-Bold", color: "#6E84DB" }}
               >
                 Sign up
               </Text>

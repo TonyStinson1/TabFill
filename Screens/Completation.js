@@ -28,6 +28,8 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -35,12 +37,24 @@ const Completation = () => {
   // console.log("^^^^^", width, height, wp(5));
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   // useEffect(() =>{
   //   const Dimension = useWindowDimensions()
 
   //   console.log("%%%%%%",Dimension);
   // },[])
+
+  resetEverything = () => {
+    AsyncStorage.clear();
+    dispatch({
+      type: "CLEAR_ALL",
+    });
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Requestlogin' }],
+    })
+  }
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
@@ -99,10 +113,7 @@ const Completation = () => {
                     height: 65,
                     borderRadius: 33,
                   }}
-                  onPress={() => navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Requestlogin' }],
-                  })}
+                  onPress={() => resetEverything()}
                 >
                   <Text
                     style={{ fontSize: 24, fontWeight: "bold", color: "white" }}

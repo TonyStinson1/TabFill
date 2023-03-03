@@ -30,6 +30,7 @@
 
                 <data android:scheme="fill-easy-demo" android:host="eme" />
                 <data android:scheme="fill-easy-demo" android:host="sign" />
+                <data android:scheme="fill-easy-demo" android:host="auth" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
