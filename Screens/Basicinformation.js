@@ -23,6 +23,15 @@ const Basicinformation = ({ route }) => {
   const [minval, setMinval] = useState(96000);
   const [maxval, setMaxval] = useState(1100000);
   const [loader, setLoader] = useState(false);
+  
+  const [cname, setCname] = useState("");
+  const [ename, setEname] = useState("");
+  const [education, setEducation] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [maritial, setMaritial] = useState("");
+  const [email, setEmail] = useState('');
+  const [resAddress, setResAddress] = useState('');
+  const [billAddress, setBillAddress] = useState('');
 
   const [val2, setVal2] = useState();
   const [val3, setVal3] = useState();
@@ -224,9 +233,9 @@ const Basicinformation = ({ route }) => {
                   <View style={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? enName?.UnstructuredName : ''}
+                      value={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? enName?.UnstructuredName : ename}
                       editable={!(enName?.UnstructuredName && enName?.UnstructuredName.length > 0)}
-                      // onChangeText={(text) => setCname(text)}
+                      onChangeText={(text) => setEname(text)}
                       style={styles.inputtext}
                     />
                   </View>
@@ -243,9 +252,9 @@ const Basicinformation = ({ route }) => {
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={''}
+                      value={cname}
                       editable={false}
-                      // onChangeText={(text) => setEname(text)}
+                      onChangeText={(text) => setCname(text)}
                       style={styles.inputtext}
                     />
                   </View>
@@ -308,8 +317,8 @@ const Basicinformation = ({ route }) => {
                     <TextInput
                       placeholder=""
                       editable={!(educationLevel && educationLevel.length > 0)}
-                      value={educationLevel && educationLevel.length > 0 ? educationLevel : ''}
-                      // onChangeText={(text) => setEducation(text)}
+                      value={educationLevel && educationLevel.length > 0 ? educationLevel : education}
+                      onChangeText={(text) => setEducation(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -331,9 +340,9 @@ const Basicinformation = ({ route }) => {
                   <View style={birthDate && birthDate.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={birthDate && birthDate.length > 0 ? birthDayConverter(birthDate) : ''}
+                      value={birthDate && birthDate.length > 0 ? birthDayConverter(birthDate) : birthDate}
                       editable={!(birthDate && birthDate.length > 0)}
-                      // onChangeText={(text) => setBirthdate(text)}
+                      onChangeText={(text) => setBirthdate(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -350,9 +359,9 @@ const Basicinformation = ({ route }) => {
                   <View style={maritalStatus && maritalStatus.length > 0 ? { ...styles.inputView, backgroundColor: '#D3D3D3' } : { ...styles.inputView, }}>
                     <TextInput
                       placeholder=""
-                      value={maritalStatus && maritalStatus.length > 0 ? mapMaritalStatus(maritalStatus) : ''}
+                      value={maritalStatus && maritalStatus.length > 0 ? mapMaritalStatus(maritalStatus) : maritalStatus}
                       editable={!(maritalStatus && maritalStatus.length > 0)}
-                      // onChangeText={(text) => setMaritial(text)}
+                      onChangeText={(text) => setMaritial(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -372,9 +381,9 @@ const Basicinformation = ({ route }) => {
                   <View style={emailAddress && emailAddress.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={emailAddress && emailAddress.length > 0 ? emailAddress : ''}
+                      value={emailAddress && emailAddress.length > 0 ? emailAddress : email}
                       editable={!(emailAddress && emailAddress.length > 0)}
-                      // onChangeText={(text) => setEmail(text)}
+                      onChangeText={(text) => setEmail(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -391,9 +400,9 @@ const Basicinformation = ({ route }) => {
                   <View style={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(residentialAddress) : ''}
+                      value={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(residentialAddress) : resAddress}
                       editable={!(residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0)}
-                      // onChangeText={(text) => setAddress(text)}
+                      onChangeText={(text) => setResAddress(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -433,8 +442,8 @@ const Basicinformation = ({ route }) => {
                     <TextInput
                       placeholder=""
                       editable={!(postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0)}
-                      value={postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(postalAddress) : ''}
-                      // onChangeText={(text) => setEducation(text)}
+                      value={postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(postalAddress) : billAddress}
+                      onChangeText={(text) => setBillAddress(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
                   </View>
@@ -474,7 +483,7 @@ const Basicinformation = ({ route }) => {
                 }}
               >
 
-                <View style={{ width: "70%" }}>
+                <View style={{ width: "70%", }}>
                   <View style={{ marginLeft: 25 }}>
                     <Slider
                       value={value}
@@ -588,7 +597,7 @@ const Basicinformation = ({ route }) => {
 
               <View
                 style={{
-                  marginTop: 25,
+                  marginTop: 80,
                   borderTopWidth: 0.5,
                   borderColor: "gray",
                 }}
