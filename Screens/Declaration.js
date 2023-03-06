@@ -12,6 +12,7 @@ const Declaration = ({ route }) => {
   const dispatch = useDispatch();
   const [tick, setTick] = useState(false);
   const { token1 } = route.params;
+  const [hkic, setHkic] = useState('****');
   const [isModalVisible, setModalVisible] = useState(false);
   const signToken = useSelector((state) => state.userInfo.signToken);
   const normSignToken = useSelector((state) => state.userInfo.normSignToken);
@@ -32,7 +33,7 @@ const Declaration = ({ route }) => {
           <View style={{ ...styles.modal, width: '100%', height: '70%' }}>
             <View style={{ marginLeft: 30, marginTop: 25, flexDirection: 'row' }}>
               <View>
-                <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold' }}>Service name: </Text>
+                <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold' }}>Document: </Text>
               </View>
               <View>
                 <Text style={{ color: '#000', fontSize: 20, }}>Loan application form </Text>
@@ -51,7 +52,7 @@ const Declaration = ({ route }) => {
                 <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold' }}>Identification code: </Text>
               </View>
               <View>
-                <Text style={{ color: '#49877c', fontSize: 22, fontWeight: 'bold' }}>5415 </Text>
+                <Text style={{ color: '#49877c', fontSize: 22, fontWeight: 'bold' }}>{hkic} </Text>
               </View>
             </View>
             <View style={{ marginLeft: 30, marginTop: 20, }}>
@@ -180,6 +181,7 @@ const Declaration = ({ route }) => {
         const res = JSON.parse(result)
         const token = res?.token;
         console.log("Response for normal singing api", res);
+        setHkic(res.hkic);
         console.log("Token data", token);
         AsyncStorage.setItem("@authSigntoken", token);
         dispatch({
@@ -198,7 +200,7 @@ const Declaration = ({ route }) => {
       } else {
         requestSignAnon();
       }
-    }, 10000)
+    }, 3000)
   }
 
   const reqNormSignResults = async () => {
@@ -229,6 +231,10 @@ const Declaration = ({ route }) => {
         let obj = JSON.parse(result);
         if (obj.status == 200) {
           console.log("Rightfully added normal api sign", obj);
+          dispatch({
+            type: "SET_NSIGN_TOKEN",
+            payload: ''
+          });
           setModalVisible(false);
           navigation.navigate('Completation')
         }

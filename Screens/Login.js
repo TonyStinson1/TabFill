@@ -90,7 +90,7 @@ const Login = () => {
         // setLoader(true);
         // redirectToIams(url);
         if(res.status) {
-          navigation.navigate('Basicinformtion', { token: token })
+          navigation.navigate('Profile', { token: token })
         }
       })
       .catch(error => console.log('error', error));

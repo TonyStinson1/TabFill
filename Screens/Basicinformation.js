@@ -175,12 +175,22 @@ const Basicinformation = ({ route }) => {
     return reformat;
   }
 
+  const mapMaritalStatus = (maritalStatus) => {
+    if (maritalStatus == 'S') {
+      return 'Single'
+    } else if (maritalStatus == 'W') {
+      return 'Widowed'
+    } else if (maritalStatus == 'M') {
+      return 'Married'
+    }
+  }
+
   const { enName, idNo, gender, educationLevel,
     residentialAddress, birthDate, emailAddress,
     maritalStatus, mobileNumber, postalAddress } = decodedData;
 
   const navToDeclare = () => {
-    if(normProfileToken.length == 0) {
+    if (normProfileToken.length == 0) {
       navigation.navigate('Declaration');
     } else {
       navigation.navigate('Declaration', { token1: token });
@@ -206,7 +216,26 @@ const Basicinformation = ({ route }) => {
                 {/* Chinese name */}
                 <View>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Chinese name* :</Text>
+                    <Text style={styles.title}>English name<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
+                    <Image
+                      source={require("../assets/smart.png")}
+                      style={styles.smartimage}
+                    />
+                  </View>
+                  <View style={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? styles.inputView1 : styles.inputView}>
+                    <TextInput
+                      placeholder=""
+                      value={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? enName?.UnstructuredName : ''}
+                      editable={!(enName?.UnstructuredName && enName?.UnstructuredName.length > 0)}
+                      // onChangeText={(text) => setCname(text)}
+                      style={styles.inputtext}
+                    />
+                  </View>
+                </View>
+                {/* English name */}
+                <View style={{ marginLeft: 20 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text style={styles.title}>Chinese name :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -217,25 +246,6 @@ const Basicinformation = ({ route }) => {
                       placeholder=""
                       value={''}
                       editable={false}
-                      // onChangeText={(text) => setCname(text)}
-                      style={styles.inputtext}
-                    />
-                  </View>
-                </View>
-                {/* English name */}
-                <View style={{ marginLeft: 20 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>English name* :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
-                      style={styles.smartimage}
-                    />
-                  </View>
-                  <View style={styles.inputView}>
-                    <TextInput
-                      placeholder=""
-                      value={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? enName?.UnstructuredName : ''}
-                      editable={false}
                       // onChangeText={(text) => setEname(text)}
                       style={styles.inputtext}
                     />
@@ -245,7 +255,7 @@ const Basicinformation = ({ route }) => {
               {/* Gender  */}
 
               <View style={{ flexDirection: "row", marginTop: 15 }}>
-                <Text style={styles.title}>Gender* : </Text>
+                <Text style={styles.title}>Gender<Text style={{ color: '#FF0000' }}>*</Text> : </Text>
                 <Image
                   source={require("../assets/smart.png")}
                   style={styles.smartimage}
@@ -269,18 +279,18 @@ const Basicinformation = ({ route }) => {
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>
-                      Hong Kong Identity Card number* :
+                      Hong Kong Identity Card number<Text style={{ color: '#FF0000' }}>*</Text> :
                     </Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={idNo?.Identification && idNo?.Identification.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      value={idNo?.Identification && idNo?.Identification.length > 0 ? `${idNo?.Identification}-(${idNo?.CheckDigit})` : ''}
-                      editable={false}
+                      value={idNo?.Identification && idNo?.Identification.length > 0 ? `${idNo?.Identification}` : ''}
+                      editable={!(idNo?.Identification && idNo?.Identification.length > 0)}
                       // onChangeText={(text) => setCardnumber(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
@@ -289,16 +299,16 @@ const Basicinformation = ({ route }) => {
                 {/* Education level */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Education level* :</Text>
+                    <Text style={styles.title}>Education level<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={{ ...styles.inputView }}>
+                  <View style={educationLevel && educationLevel.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      editable={false}
+                      editable={!(educationLevel && educationLevel.length > 0)}
                       value={educationLevel && educationLevel.length > 0 ? educationLevel : ''}
                       // onChangeText={(text) => setEducation(text)}
                       style={{ ...styles.inputtext, width: 350 }}
@@ -313,17 +323,17 @@ const Basicinformation = ({ route }) => {
                 {/* DOB */}
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Date of birth* :</Text>
+                    <Text style={styles.title}>Date of birth<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={birthDate && birthDate.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
                       value={birthDate && birthDate.length > 0 ? birthDayConverter(birthDate) : ''}
-                      editable={false}
+                      editable={!(birthDate && birthDate.length > 0)}
                       // onChangeText={(text) => setBirthdate(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
@@ -332,17 +342,17 @@ const Basicinformation = ({ route }) => {
                 {/*  Marital status */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Marital status* :</Text>
+                    <Text style={styles.title}>Marital status<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={maritalStatus && maritalStatus.length > 0 ? { ...styles.inputView, backgroundColor: '#D3D3D3' } : { ...styles.inputView, }}>
                     <TextInput
                       placeholder=""
-                      value={maritalStatus && maritalStatus.length > 0 ? maritalStatus : ''}
-                      editable={false}
+                      value={maritalStatus && maritalStatus.length > 0 ? mapMaritalStatus(maritalStatus) : ''}
+                      editable={!(maritalStatus && maritalStatus.length > 0)}
                       // onChangeText={(text) => setMaritial(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
@@ -354,17 +364,17 @@ const Basicinformation = ({ route }) => {
                 {/* Email */}
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Email* :</Text>
+                    <Text style={styles.title}>Email<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={emailAddress && emailAddress.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
                       value={emailAddress && emailAddress.length > 0 ? emailAddress : ''}
-                      editable={false}
+                      editable={!(emailAddress && emailAddress.length > 0)}
                       // onChangeText={(text) => setEmail(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
@@ -373,17 +383,17 @@ const Basicinformation = ({ route }) => {
                 {/* Residential address */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Residential address* :</Text>
+                    <Text style={styles.title}>Residential address<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
                       value={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(residentialAddress) : ''}
-                      editable={false}
+                      editable={!(residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0)}
                       // onChangeText={(text) => setAddress(text)}
                       style={{ ...styles.inputtext, width: 350 }}
                     />
@@ -395,16 +405,16 @@ const Basicinformation = ({ route }) => {
                 {/* Number */}
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Mobile phone number* :</Text>
+                    <Text style={styles.title}>Mobile phone number<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={mobileNumber && mobileNumber.SubscriberNumber.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      editable={false}
+                      editable={!(mobileNumber && mobileNumber.SubscriberNumber.length > 0)}
                       value={mobileNumber && mobileNumber.SubscriberNumber.length > 0 ? `${mobileNumber.CountryCode} - ${mobileNumber.SubscriberNumber}` : ''}
                       // onChangeText={(text) => setNumber(text)}
                       style={{ ...styles.inputtext, width: 350 }}
@@ -414,16 +424,16 @@ const Basicinformation = ({ route }) => {
                 {/* Billing address */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Billing address* :</Text>
+                    <Text style={styles.title}>Billing address<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
                     />
                   </View>
-                  <View style={styles.inputView}>
+                  <View style={postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
                       placeholder=""
-                      editable={false}
+                      editable={!(postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0)}
                       value={postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 ? residentialFormat(postalAddress) : ''}
                       // onChangeText={(text) => setEducation(text)}
                       style={{ ...styles.inputtext, width: 350 }}
@@ -451,7 +461,7 @@ const Basicinformation = ({ route }) => {
                   marginTop: 10,
                 }}
               >
-                Annual Income(minimum requirement is HK$96,000)* :{" "}
+                Annual Income<Text style={{ color: '#FF0000' }}>*</Text> :{" "}
               </Text>
 
               <View
@@ -466,33 +476,35 @@ const Basicinformation = ({ route }) => {
               >
 
                 <View style={{ width: "70%" }}>
-                  <Slider
-                    value={value}
-                    // thumbTouchSize={{ width: 50, height: 50 }}
-                    step={4}
-                    thumbStyle={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 40,
-                      backgroundColor: "white",
-                      borderWidth: 0.5,
-                      borderColor: "gray",
-                    }}
-                    thumbTintColor="pink"
-                    maximumValue={1100000}
-                    minimumValue={90000}
-                    style={{ width: "100%" }}
-                    trackStyle={{
-                      backgroundColor: "white",
-                      borderWidth: 0.5,
-                      height: 3,
-                      borderRadius: 5,
-                      borderColor: "gray",
-                    }}
-                    onValueChange={(v) => {
-                      console.log("Value", v), setValue(v);
-                    }}
-                  />
+                  <View style={{ marginLeft: 25 }}>
+                    <Slider
+                      value={value}
+                      // thumbTouchSize={{ width: 50, height: 50 }}
+                      step={4}
+                      thumbStyle={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 40,
+                        backgroundColor: "white",
+                        borderWidth: 0.5,
+                        borderColor: "gray",
+                      }}
+                      thumbTintColor="pink"
+                      maximumValue={1100000}
+                      minimumValue={96000}
+                      style={{ width: "100%" }}
+                      trackStyle={{
+                        backgroundColor: "white",
+                        borderWidth: 0.5,
+                        height: 3,
+                        borderRadius: 5,
+                        borderColor: "gray",
+                      }}
+                      onValueChange={(v) => {
+                        console.log("Value", v), setValue(v);
+                      }}
+                    />
+                  </View>
                   <View
                     style={{
                       width: "100%",
@@ -590,7 +602,7 @@ const Basicinformation = ({ route }) => {
                     marginTop: 15,
                   }}
                 >
-                  *Note:
+                  <Text style={{ color: '#FF0000' }}>*</Text>Note:
                 </Text>
                 <Text style={{ fontSize: 20, color: "black" }}>
                   (a) Only application to client who does not hold any deposit
@@ -631,6 +643,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#707070",
     marginTop: 20,
+  },
+  inputView1: {
+    height: 54,
+    borderWidth: 1,
+    borderColor: "#707070",
+    marginTop: 20,
+    backgroundColor: '#D3D3D3'
   },
   inputtext: { color: "black", fontSize: 18, marginLeft: 25 },
 });

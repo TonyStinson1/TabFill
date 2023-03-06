@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Formtheme from "./Component/formtheme";
 import { useNavigation } from "@react-navigation/native";
 
-const Profile = () => {
+const Profile = ({ route }) => {
   const [cname, setCname] = useState("");
   const [ename, setEname] = useState("");
   const [cardnumber, setCardnumber] = useState("");
@@ -26,16 +26,18 @@ const Profile = () => {
   const [number, setNumber] = useState("");
   const [billadd, setBilladd] = useState("");
 
+  const { token } = route.params;
   const data = useSelector(state => state);
 
   const dispatch = useDispatch();
 
   const profileToken = useSelector((state) => state.userInfo.profileToken);
-  
+  const nprofileToken = useSelector((state) => state.userInfo.normProfileToken);
+
   const navigation = useNavigation();
 
   useEffect(() => {
-    if(profileToken && profileToken.length > 0) {
+    if (profileToken && profileToken.length > 0) {
       navigation.navigate('Basicinformtion');
     }
   }, [profileToken]);
@@ -92,24 +94,27 @@ const Profile = () => {
 
     fetch("https://dev.fill-easy.com/iamsmart/request/eme-anonymous", requestOptions)
       .then(response => response.text())
-      .then(result =>{
-        const res =   JSON.parse(result)
+      .then(result => {
+        const res = JSON.parse(result)
         const token = res?.token
         const url = res?.url;
         console.log("Response for 1st api", res);
         console.log("Token data", token);
-        AsyncStorage.setItem("@token" , token);
-
+        AsyncStorage.setItem("@token", token);
 
         redirectToIams(url);
       })
       .catch(error => console.log('error', error));
   }
 
+  const navToBasic = () => {
+    navigation.navigate('Basicinformtion', { token: token })
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Formtheme text={"User Profile"}
-        handlenav={requestEmeAnon}
+        handlenav={route.params.token ? navToBasic : requestEmeAnon}
         bottomtext={"Personal data with iAM Smart"}>
         <View style={{ flex: 1, zIndex: -999, paddingHorizontal: 50, marginTop: -50 }}>
           <ScrollView style={{ flex: 1 }}>
@@ -118,7 +123,7 @@ const Profile = () => {
                 {/* Chinese name */}
                 <View>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Chinese name* :</Text>
+                    <Text style={styles.title}>English name<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -136,7 +141,7 @@ const Profile = () => {
                 {/* English name */}
                 <View style={{ marginLeft: 20 }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>English name* :</Text>
+                    <Text style={styles.title}>Chinese name :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -155,7 +160,7 @@ const Profile = () => {
               {/* Gender  */}
 
               <View style={{ flexDirection: "row", marginTop: 15 }}>
-                <Text style={styles.title}>Gender* : </Text>
+                <Text style={styles.title}>Gender<Text style={{ color: '#FF0000' }}>*</Text> : </Text>
                 <Image
                   source={require("../assets/smart.png")}
                   style={styles.smartimage}
@@ -179,7 +184,7 @@ const Profile = () => {
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>
-                      Hong Kong Identity Card number* :
+                      Hong Kong Identity Card number<Text style={{ color: '#FF0000' }}>*</Text> :
                     </Text>
                     <Image
                       source={require("../assets/smart.png")}
@@ -198,7 +203,7 @@ const Profile = () => {
                 {/* Education level */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Education level* :</Text>
+                    <Text style={styles.title}>Education level<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -221,7 +226,7 @@ const Profile = () => {
                 {/* DOB */}
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Date of birth* :</Text>
+                    <Text style={styles.title}>Date of birth<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -239,7 +244,7 @@ const Profile = () => {
                 {/*  Marital status */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Marital status* :</Text>
+                    <Text style={styles.title}>Marital status<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -260,7 +265,7 @@ const Profile = () => {
                 {/* Email */}
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Email* :</Text>
+                    <Text style={styles.title}>Email<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -278,7 +283,7 @@ const Profile = () => {
                 {/* Residential address */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Residential address* :</Text>
+                    <Text style={styles.title}>Residential address<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}
@@ -300,7 +305,7 @@ const Profile = () => {
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>
-                      Mobile phone number*  :
+                      Mobile phone number<Text style={{ color: '#FF0000' }}>*</Text>  :
                     </Text>
                     <Image
                       source={require("../assets/smart.png")}
@@ -319,7 +324,7 @@ const Profile = () => {
                 {/* Billing address */}
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.title}>Billing address* :</Text>
+                    <Text style={styles.title}>Billing address<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
                     <Image
                       source={require("../assets/smart.png")}
                       style={styles.smartimage}

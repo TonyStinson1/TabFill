@@ -145,9 +145,9 @@ const Formtheme = ({ children, text, bottomtext, handlenav, disabled = false }) 
           >
             <TouchableOpacity
               style={{
-                backgroundColor: "#2b7366",
+                backgroundColor: bottomtext == 'Next' ? '#000' : "#2b7366",
                 borderRadius: 150,
-                width: 442,
+                width: bottomtext == 'Next' ? 180 : 442,
                 height: 65,
                 marginTop: 15,
                 flexDirection: "row",
@@ -165,7 +165,7 @@ const Formtheme = ({ children, text, bottomtext, handlenav, disabled = false }) 
                 }
               }}
             >
-              <Image source={require("../../assets/ismart.png")} />
+              {bottomtext == 'Next' ? <></> : <Image source={require("../../assets/ismart.png")} />}
               <Text
                 style={{
                   fontSize: 22,

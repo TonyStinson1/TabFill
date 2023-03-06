@@ -216,7 +216,7 @@ const Completation = () => {
                   style={{ width: 351, height: 351 }}
                 />
                 <TouchableOpacity style={{ marginLeft: 70 }}>
-                  <Text style={{ fontSize: 18, fontFamily: "PTSans-Regular", color: "#67A4E4", textDecorationLine: "underline" }}>applicants.loanform.pdf</Text>
+                  {/* <Text style={{ fontSize: 18, fontFamily: "PTSans-Regular", color: "#67A4E4", textDecorationLine: "underline" }}>applicants.loanform.pdf</Text> */}
                 </TouchableOpacity>
               </View>
             </View>
