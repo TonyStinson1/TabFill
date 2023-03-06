@@ -47,7 +47,6 @@ const Basicinformation = ({ route }) => {
   const profileToken = useSelector((state) => state.userInfo.profileToken);
   const normProfileToken = useSelector((state) => state.userInfo.normProfileToken);
   const [decodedData, setDecodedData] = useState({});
-  const [loader1, setLoader1] = useState(true);
   const navigation = useNavigation();
 
   function getStringBetween(str, start, end) {
@@ -60,7 +59,7 @@ const Basicinformation = ({ route }) => {
 
   useEffect(() => {
     let interval;
-    if (normProfileToken.length == 0) {
+    if (normProfileToken.length == 0 && profileToken.length == 0) {
       interval = setInterval(reqFromDetails, 1000);
     } else {
       let data = atob1(normProfileToken);
@@ -191,7 +190,7 @@ const Basicinformation = ({ route }) => {
 
   const navToDeclare = () => {
     if (normProfileToken.length == 0) {
-      navigation.navigate('Declaration');
+      navigation.navigate('Declaration', { token1: '' });
     } else {
       navigation.navigate('Declaration', { token1: token });
     }

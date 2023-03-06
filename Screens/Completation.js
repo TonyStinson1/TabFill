@@ -118,7 +118,7 @@ const Completation = () => {
                   <Text
                     style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
                   >
-                    Back
+                    Home
                   </Text>
                 </TouchableOpacity>
               </View>

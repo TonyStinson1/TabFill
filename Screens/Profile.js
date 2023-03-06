@@ -38,7 +38,7 @@ const Profile = ({ route }) => {
 
   useEffect(() => {
     if (profileToken && profileToken.length > 0) {
-      navigation.navigate('Basicinformtion');
+      navigation.navigate('Basicinformtion', { token: '' });
     }
   }, [profileToken]);
 

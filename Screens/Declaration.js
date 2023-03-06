@@ -131,7 +131,8 @@ const Declaration = ({ route }) => {
         const res = JSON.parse(result)
         const token = res?.token;
         const url = res?.url;
-        console.log("Response for 1st api", res);
+        console.log("Response for 1st sign  api", res);
+        setHkic(res.hkic);
         console.log("Token data", token);
         AsyncStorage.setItem("@signtoken", token);
 

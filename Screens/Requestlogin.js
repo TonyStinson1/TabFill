@@ -137,7 +137,7 @@ const RequestLogin = () => {
                   justifyContent: "center",
                   borderRadius: 33,
                 }}
-                onPress={() => navigation.navigate("Profile")}
+                onPress={() => navigation.navigate("Profile", { token: '' })}
               >
                 <Text
                   style={{
