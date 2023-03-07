@@ -29,10 +29,12 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const authToken = useSelector((state) => state.userInfo.authToken);
@@ -89,13 +91,23 @@ const Login = () => {
         const token = res?.token;
         // setLoader(true);
         // redirectToIams(url);
-        if(res.status) {
+        if (res.status) {
           navigation.navigate('Profile', { token: token })
         }
       })
       .catch(error => console.log('error', error));
   }
 
+  const resetEverything = () => {
+    AsyncStorage.clear();
+    dispatch({
+      type: "CLEAR_ALL",
+    });
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Requestlogin' }],
+    })
+  }
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
@@ -161,6 +173,7 @@ const Login = () => {
                     paddingVertical: 10,
                     borderRadius: 33,
                   }}
+                  onPress={() => resetEverything()}
                 >
                   <Text
                     style={{ fontSize: 24, fontFamily: "PTSans-Bold", color: "white" }}
@@ -266,85 +279,6 @@ const Login = () => {
           </View>
         </View>
       </LinearGradient>
-
-      {/* <View style={{ width: "60%" }}>
-        <Image
-          source={require("../assets/m.png")}
-          style={{ height: hp("100%"), width: "140%" }}
-        />
-
-        <View style={{ position: "absolute", width: "100%", height: "100%" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: "100%",
-              paddingLeft: "15%",
-              justifyContent: "space-evenly",
-              marginTop: "10%",
-            }}
-          >
-            <TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                Banking
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                Creditcard
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                Loans
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                Profile
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/user.png")}
-                style={{ width: 41, height: 41 }}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={{ marginTop: "15%", alignSelf: "center" }}>
-            <Image
-              source={require("../assets/success.png")}
-              style={{ width: 544, height: 408 }}
-            />
-          </View>
-        </View>
-      </View> */}
     </View>
   );
 };

@@ -13,13 +13,13 @@ const Declaration = ({ route }) => {
   const [tick, setTick] = useState(false);
   const { token1 } = route.params;
   const [hkic, setHkic] = useState('****');
+  const [url, setUrl] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const signToken = useSelector((state) => state.userInfo.signToken);
   const normSignToken = useSelector((state) => state.userInfo.normSignToken);
-  const normProfileToken = useSelector((state) => state.userInfo.normProfileToken);
 
 
-  function redirectToIams(url) {
+  function redirectToIams() {
     Linking.openURL(url);
   }
 
@@ -79,6 +79,32 @@ const Declaration = ({ route }) => {
                 <Text style={{ color: '#000', fontSize: 18, }}>3. Make sure the identification code shown in "iAM Smart" is the same and tap on "Sign to complete the digital signing" </Text>
               </View>
             </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#2b7366",
+                borderRadius: 150,
+                display: url && url.length > 0 ? 'flex' : 'none',
+                width: 300,
+                height: 65,
+                marginLeft: 20,
+                marginTop: 20,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => redirectToIams()}
+            >
+              <Image source={require("../assets/ismart.png")} />
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontFamily: "PTSans-Bold",
+                  color: "white",
+                }}
+              >
+                Open iAM SMART
+              </Text>
+            </TouchableOpacity>
           </View>
         </Modals.Container>
       </Modal>
@@ -130,13 +156,14 @@ const Declaration = ({ route }) => {
       .then(result => {
         const res = JSON.parse(result)
         const token = res?.token;
-        const url = res?.url;
+        const url1 = res?.url;
+        setUrl(url1);
         console.log("Response for 1st sign  api", res);
         setHkic(res.hkic);
         console.log("Token data", token);
         AsyncStorage.setItem("@signtoken", token);
 
-        redirectToIams(url);
+        // redirectToIams(url);
       })
       .catch(error => console.log('error', error));
   }
@@ -179,7 +206,7 @@ const Declaration = ({ route }) => {
     fetch("https://dev.fill-easy.com/iamsmart/request/signing", requestOptions)
       .then(response => response.text())
       .then(result => {
-        const res = JSON.parse(result)
+        const res = JSON.parse(result);
         const token = res?.token;
         console.log("Response for normal singing api", res);
         setHkic(res.hkic);

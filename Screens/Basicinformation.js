@@ -20,7 +20,7 @@ const Basicinformation = ({ route }) => {
 
   const [value, setValue] = useState(96000);
   const { token } = route.params;
-  const [minval, setMinval] = useState(96000);
+  const [minval, setMinval] = useState('96,000');
   const [maxval, setMaxval] = useState(1100000);
   const [loader, setLoader] = useState(false);
   
@@ -38,20 +38,24 @@ const Basicinformation = ({ route }) => {
   const [val4, setval4] = useState();
 
   useEffect(() => {
-    const thirdval = maxval - minval;
-    const t = thirdval / 2;
-    setVal3(t);
+    // const thirdval = maxval - minval;
+    // const t = thirdval / 2;
+    setVal3('$610,000');
 
-    const secondval = t - minval;
-    const s = secondval / 2;
-    setVal2(s);
+    // const secondval = t - minval;
+    // const s = secondval / 2;
+    setVal2('$360,000');
 
-    const a = t - s;
-    const f = t + a;
-    const fourthval = maxval - t;
-    // const f = fourthval /2
-    setval4(f);
+    // const a = t - s;
+    // const f = t + a;
+    // const fourthval = maxval - t;
+    // // const f = fourthval /2
+    setval4('$840,000');
   }, [minval]);
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
   const profileToken = useSelector((state) => state.userInfo.profileToken);
   const normProfileToken = useSelector((state) => state.userInfo.normProfileToken);
@@ -215,7 +219,7 @@ const Basicinformation = ({ route }) => {
   }
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Formtheme text={"Basic Informations"}
+      <Formtheme text={"User Profile"}
         bottomtext={"Next"} handlenav={navToDeclare} >
         <View style={{ flex: 1, paddingHorizontal: 50, marginTop: -50 }}>
           <ScrollView style={{ flex: 1, marginBottom: 160 }}>
@@ -225,10 +229,10 @@ const Basicinformation = ({ route }) => {
                 <View>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>English name<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {enName?.UnstructuredName && enName?.UnstructuredName.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={enName?.UnstructuredName && enName?.UnstructuredName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -244,16 +248,15 @@ const Basicinformation = ({ route }) => {
                 <View style={{ marginLeft: 20 }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Chinese name :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {/* <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    /> */}
                   </View>
                   <View style={styles.inputView}>
                     <TextInput
                       placeholder=""
                       value={cname}
-                      editable={false}
                       onChangeText={(text) => setCname(text)}
                       style={styles.inputtext}
                     />
@@ -265,7 +268,7 @@ const Basicinformation = ({ route }) => {
               <View style={{ flexDirection: "row", marginTop: 15 }}>
                 <Text style={styles.title}>Gender<Text style={{ color: '#FF0000' }}>*</Text> : </Text>
                 <Image
-                  source={require("../assets/smart.png")}
+                  source={require("../assets/icon-light-3x.png")}
                   style={styles.smartimage}
                 />
                 <TouchableOpacity>
@@ -289,10 +292,10 @@ const Basicinformation = ({ route }) => {
                     <Text style={styles.title}>
                       Hong Kong Identity Card number<Text style={{ color: '#FF0000' }}>*</Text> :
                     </Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {idNo?.Identification && idNo?.Identification.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={idNo?.Identification && idNo?.Identification.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -308,10 +311,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Education level<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {educationLevel && educationLevel.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={educationLevel && educationLevel.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -332,10 +335,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Date of birth<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {educationLevel && educationLevel.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={birthDate && birthDate.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -351,10 +354,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Marital status<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {maritalStatus && maritalStatus.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={maritalStatus && maritalStatus.length > 0 ? { ...styles.inputView, backgroundColor: '#D3D3D3' } : { ...styles.inputView, }}>
                     <TextInput
@@ -373,10 +376,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Email<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {emailAddress && emailAddress.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={emailAddress && emailAddress.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -392,10 +395,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Residential address<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={residentialAddress?.EngPremisesAddress?.BuildingName && residentialAddress.EngPremisesAddress.BuildingName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -414,10 +417,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Mobile phone number<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {mobileNumber && mobileNumber.SubscriberNumber.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={mobileNumber && mobileNumber.SubscriberNumber.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -433,10 +436,10 @@ const Basicinformation = ({ route }) => {
                 <View style={{ marginLeft: 25, width: "40%" }}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={styles.title}>Billing address<Text style={{ color: '#FF0000' }}>*</Text> :</Text>
-                    <Image
-                      source={require("../assets/smart.png")}
+                    {postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 && <Image
+                      source={require("../assets/icon-light-3x.png")}
                       style={styles.smartimage}
-                    />
+                    />}
                   </View>
                   <View style={postalAddress?.EngPremisesAddress?.BuildingName && postalAddress.EngPremisesAddress.BuildingName.length > 0 ? styles.inputView1 : styles.inputView}>
                     <TextInput
@@ -477,14 +480,13 @@ const Basicinformation = ({ route }) => {
                   flexDirection: "row",
                   marginTop: 15,
                   paddingBottom: 50,
-                  borderBottomWidth: 0.5,
                   borderColor: "gray",
                   alignItems: "center",
                 }}
               >
 
                 <View style={{ width: "70%", }}>
-                  <View style={{ marginLeft: 25 }}>
+                  <View style={{ marginLeft: 15 }}>
                     <Slider
                       value={value}
                       // thumbTouchSize={{ width: 50, height: 50 }}
@@ -529,7 +531,7 @@ const Basicinformation = ({ route }) => {
                           color: "black",
                         }}
                       >
-                        HK$ {minval}
+                        ${minval}
                       </Text>
                     </View>
 
@@ -571,9 +573,6 @@ const Basicinformation = ({ route }) => {
                         {val4}
                       </Text>
                     </View>
-                    {/* <Text style={{ fontSize: 25 }}>{val2}</Text> */}
-                    {/* <Text style={{ fontSize: 25 }}>{val3}</Text> */}
-                    {/* <Text style={{ fontSize: 25 }}>{val4}</Text> */}
                     <Text style={{ fontSize: 25 }}>more</Text>
                   </View>
                 </View>
@@ -584,13 +583,12 @@ const Basicinformation = ({ route }) => {
                     marginLeft: "2%",
                     paddingVertical: 10,
                     justifyContent: "center",
-                    borderWidth: 0.5,
                     borderColor: "gray",
                   }}
                 >
                   <Text style={{ fontSize: 18, color: "#67A4E4" }}>
                     {" "}
-                    HK$ <Text style={{ fontSize: 40 }}>{value.toFixed(2)}</Text>
+                    $ <Text style={{ fontSize: 40 }}>{numberWithCommas(value)}</Text>
                   </Text>
                 </View>
               </View>
@@ -598,28 +596,28 @@ const Basicinformation = ({ route }) => {
               <View
                 style={{
                   marginTop: 80,
-                  borderTopWidth: 0.5,
                   borderColor: "gray",
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 25,
-                    color: "black",
+                    fontSize: 19,
+                    color: "#D3D3D3",
                     fontWeight: "bold",
                     marginTop: 15,
+                    marginBottom: 5
                   }}
                 >
-                  <Text style={{ color: '#FF0000' }}>*</Text>Note:
+                  <Text style={{ color: '#FF0000' }}>* </Text>Note:
                 </Text>
-                <Text style={{ fontSize: 20, color: "black" }}>
+                <Text style={{ fontSize: 17, color: "#D3D3D3" }}>
                   (a) Only application to client who does not hold any deposit
                   account, including Saving Account(s). Current Cheque
                   Account(s). Integrated Deposits Account(s) and Time Deposit
                   Account(s), with the Bank in the past 12 months from the date
                   of Online Application submission.
                 </Text>
-                <Text style={{ fontSize: 20, color: "black" }}>
+                <Text style={{ fontSize: 17, color: "#D3D3D3" }}>
                   (b) Client needs to bring along all the required documents and
                   visit any branch nearby to complete the account opening
                   process within 14 days upon application submission.

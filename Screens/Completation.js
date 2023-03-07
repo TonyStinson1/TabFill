@@ -34,16 +34,9 @@ import { useDispatch } from "react-redux";
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 const Completation = () => {
-  // console.log("^^^^^", width, height, wp(5));
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
-  // useEffect(() =>{
-  //   const Dimension = useWindowDimensions()
-
-  //   console.log("%%%%%%",Dimension);
-  // },[])
 
   resetEverything = () => {
     AsyncStorage.clear();

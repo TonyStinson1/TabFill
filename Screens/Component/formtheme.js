@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
 
 const Formtheme = ({ children, text, bottomtext, handlenav, disabled = false }) => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  
+  resetEverything = () => {
+    AsyncStorage.clear();
+    dispatch({
+      type: "CLEAR_ALL",
+    });
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Requestlogin' }],
+    })
+  }
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -190,12 +204,12 @@ const Formtheme = ({ children, text, bottomtext, handlenav, disabled = false }) 
                 justifyContent: "center",
                 marginLeft: 15,
               }}
-              onPress={() => navigation.goBack()}
+              onPress={() => {text == 'Basic Informations' ? resetEverything() : navigation.goBack()}}
             >
               <Text
                 style={{ fontSize: 24, fontWeight: "bold", color: "black" }}
               >
-                Back
+                {text == 'User Profile' ? 'Cancel' : 'Back'}
               </Text>
             </TouchableOpacity>
           </View>

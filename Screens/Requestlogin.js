@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -20,20 +20,90 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Modal from "react-native-modal";
+import { Modals } from "./Component/ModalPop";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 
 const RequestLogin = () => {
 
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [url, setUrl] = useState('');
+
+  const ModalPop = () => {
+    return (
+      <Modal isVisible={isModalVisible}>
+        <Modals.Container>
+          <View style={{ height: '15%', justifyContent: 'center', backgroundColor: '#c49b33' }}>
+            <Modals.Header title='Login application with "iAM SMART"' />
+          </View>
+          <View style={{ ...styles.modal, width: '100%', height: '60%' }}>
+            <View style={{ marginLeft: 30, marginTop: 20, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>Please follow the steps below: </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#49877c', fontSize: 18, }}>1. Open "iAM Smart" app in your mobile device </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>2. Tap on "To fill" </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>3. Tap on "Agree to use" to authorise</Text>
+              </View>
+              <View style={{ marginTop: 10, marginLeft: 20 }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#2b7366",
+                    borderRadius: 150,
+                    width: 300,
+                    height: 65,
+                    marginTop: 15,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => navToLogin()}
+                >
+                  <Image source={require("../assets/ismart.png")} />
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontFamily: "PTSans-Bold",
+                      color: "white",
+                    }}
+                  >
+                    Open iAM SMART
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modals.Container>
+      </Modal>
+    )
+  }
+
   const navigation = useNavigation();
   const authToken = useSelector((state) => state.userInfo.authToken);
 
   useEffect(() => {
-    if(authToken && authToken.length > 0) {
+    if (authToken && authToken.length > 0) {
       navigation.navigate('Login');
     }
-  }, [authToken])
+  }, [authToken]);
+
+  const navToLogin = () => {
+    setModalVisible(false);
+    redirectToIams();
+  }
 
   const requestLoginAnon = async () => {
 
@@ -63,16 +133,25 @@ const RequestLogin = () => {
         const token = res?.token
         console.log("Response for Login token for check", token);
         const url = res?.url;
+        setUrl(url);
+        AsyncStorage.setItem("@authtoken", token);
 
-        AsyncStorage.setItem("@authtoken" , token);
+        // redirectToIams(url);
+        setModalVisible(true);
 
-        redirectToIams(url);
       })
       .catch(error => console.log('error', error));
   }
 
-  function redirectToIams(url) {
+  function redirectToIams() {
     Linking.openURL(url);
+  }
+
+
+  if (isModalVisible) {
+    return (
+      <ModalPop />
+    )
   }
 
   return (
