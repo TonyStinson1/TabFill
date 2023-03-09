@@ -79,32 +79,34 @@ const Declaration = ({ route }) => {
                 <Text style={{ color: '#000', fontSize: 18, }}>3. Make sure the identification code shown in "iAM Smart" is the same and tap on "Sign to complete the digital signing" </Text>
               </View>
             </View>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#2b7366",
-                borderRadius: 150,
-                display: url && url.length > 0 ? 'flex' : 'none',
-                width: 300,
-                height: 65,
-                marginLeft: 20,
-                marginTop: 20,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => redirectToIams()}
-            >
-              <Image source={require("../assets/ismart.png")} />
-              <Text
+            <View style={{ alignSelf: 'center', justifyContent: 'center' }} >
+              <TouchableOpacity
                 style={{
-                  fontSize: 22,
-                  fontFamily: "PTSans-Bold",
-                  color: "white",
+                  backgroundColor: "#2b7366",
+                  borderRadius: 150,
+                  display: url && url.length > 0 ? 'flex' : 'none',
+                  width: 300,
+                  height: 65,
+                  marginLeft: 20,
+                  marginTop: 20,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
+                onPress={() => redirectToIams()}
               >
-                Open iAM SMART
-              </Text>
-            </TouchableOpacity>
+                <Image source={require("../assets/ismart.png")} />
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontFamily: "PTSans-Bold",
+                    color: "white",
+                  }}
+                >
+                  Open iAM SMART
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Modals.Container>
       </Modal>
