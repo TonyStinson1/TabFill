@@ -12,8 +12,8 @@ import {
 import Formtheme from "./Component/formtheme";
 import Slider from "react-native-slider";
 import { useDispatch, useSelector } from "react-redux";
-//import Slider from "@react-native-community/slider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Modal from "react-native-modal";
+import { Modals } from "./Component/ModalPop";
 import { useNavigation } from "@react-navigation/native";
 
 const Basicinformation = ({ route }) => {
@@ -23,7 +23,7 @@ const Basicinformation = ({ route }) => {
   const [minval, setMinval] = useState('96,000');
   const [maxval, setMaxval] = useState(1100000);
   const [loader, setLoader] = useState(false);
-  
+
   const [cname, setCname] = useState("");
   const [ename, setEname] = useState("");
   const [education, setEducation] = useState("");
@@ -55,7 +55,7 @@ const Basicinformation = ({ route }) => {
 
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+  }
 
   const profileToken = useSelector((state) => state.userInfo.profileToken);
   const normProfileToken = useSelector((state) => state.userInfo.normProfileToken);
@@ -210,11 +210,70 @@ const Basicinformation = ({ route }) => {
   }
 
 
+  const ModalPop = () => {
+    return (
+      <Modal isVisible={loader}>
+        <Modals.Container>
+          <View style={{ height: '15%', justifyContent: 'center', backgroundColor: '#c49b33' }}>
+            <Modals.Header title='Login application with "iAM SMART"' />
+          </View>
+          <View style={{ ...styles.modal, width: '100%', height: '60%' }}>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>Please follow the steps below: </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#49877c', fontSize: 18, }}>1. Open "iAM Smart" app in your mobile device </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>2. Tap on "To fill" </Text>
+              </View>
+            </View>
+            <View style={{ marginLeft: 30, marginTop: 25, }}>
+              <View>
+                <Text style={{ color: '#000', fontSize: 18, }}>3. Tap on "Agree to use" to authorise</Text>
+              </View>
+              <View style={{ marginTop: '5%', marginLeft: 30, alignSelf: 'center', justifyContent: 'center' }}>
+                {/* <TouchableOpacity
+                  style={{
+                    backgroundColor: "#2b7366",
+                    borderRadius: 150,
+                    width: 300,
+                    height: 65,
+                    marginTop: 15,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => redirectToIams()}
+                >
+                  <Image source={require("../assets/ismart.png")} />
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontFamily: "PTSans-Bold",
+                      color: "white",
+                    }}
+                  >
+                    Open iAM SMART
+                  </Text>
+                </TouchableOpacity> */}
+                <ActivityIndicator size="large" color="#00ff00" />
+              </View>
+            </View>
+          </View>
+        </Modals.Container>
+      </Modal>
+    )
+  }
+
   if (loader) {
     return (
-      <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#00ff00" />
-      </View>
+      <ModalPop />
     )
   }
   return (
