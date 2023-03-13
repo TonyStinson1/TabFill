@@ -75,14 +75,34 @@ const Basicinformation = ({ route }) => {
     if (normProfileToken.length == 0 && profileToken.length == 0) {
       interval = setInterval(reqFromDetails, 1000);
     } else {
-      jwtParts = normProfileToken.split('.',);
-      console.log("JWT parts", jwtParts);
-      let tokenPayload = jwtParts[1];
-      console.log("Token load", tokenPayload);
-      let decryptedResultsString = atob1(tokenPayload);
-      console.log("Decrypted results ", decryptedResultsString);
-      let prof1 = JSON.parse(decryptedResultsString);
-      setDecodedData(prof1.Eme);
+      console.log("Norm profile token ", normProfileToken);
+      if(normProfileToken.length > 0) {
+        let jwtParts = normProfileToken.split('.',);
+        console.log("JWT parts", jwtParts);
+        let tokenPayload = jwtParts[1];
+        console.log("Token load", tokenPayload);
+        let decryptedResultsString = atob1(tokenPayload);
+        console.log("Decrypted results ", decryptedResultsString);
+        let prof1 = JSON.parse(decryptedResultsString);
+        setDecodedData(prof1.Eme);
+      }
+
+
+
+      // let data = atob1(normProfileToken);
+      // let prof, prof1;
+      // if (data.length > 0) {
+      //   console.log("String data1", stringData);
+      //   let stringData = data.slice(0, -31);
+      //   console.log("String data2", stringData);
+      //   console.log("String data last character", stringData[stringData.length - 1]);
+      //   prof = getStringBetween(stringData, '"HS256"}', "}}}}}}");
+      //   // console.log("Data from stirng between", prof);
+      //   prof = prof + "}}}}}}"
+      //   prof1 = JSON.parse(prof);
+      //   console.log("Decoded prof data", JSON.stringify(prof1));
+      //   setDecodedData(prof1.Eme);
+      // }
     }
     return () => {
       clearInterval(interval);

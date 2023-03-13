@@ -141,8 +141,10 @@ const Declaration = ({ route }) => {
       'source': 'PC_Browser',
       'redirect': 'fill-easy-demo://sign/',
       'name': 'Credit Card Application Form',
-      'hkicHash': '4753bd125a926815892a6551933d70d687e2bcef17b608863cd8bd4e0e709f23',
-      'fileHash': 'af8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a912930019301',
+      // 'hkicHash': '4753bd125a926815892a6551933d70d687e2bcef17b608863cd8bd4e0e709f23',
+      // 'fileHash': 'af8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a912930019301',
+      "hkicHash": "c913c226c44240d29854783a3ff33c0b2e8ed1136224fb8f537716ef003c2b70",
+    "fileHash": "af8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a912930019301",
       'service': 'Digital Signing of Supplementary Card Application Form by fill-easy'
     });
 
@@ -194,7 +196,7 @@ const Declaration = ({ route }) => {
       "token": `${tokenasync}`,
       "source": "PC_Browser",
       "name": "Credit Card Application Form",
-      "hash": "a642a0edd1f3f8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a9",
+      "hash": "c913c226c44240d29854783a3ff33c0b2e8ed1136224fb8f537716ef003c2b70", //"a642a0edd1f3f8b6f626242f214be360fa7d412e42dacb2f48bc11bb089019a9",
       "service": "Digital Signing of Supplementary Card Application Form by fill-easy"
     });
 
