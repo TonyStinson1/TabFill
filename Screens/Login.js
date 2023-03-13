@@ -37,67 +37,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const authToken = useSelector((state) => state.userInfo.authToken);
-
-  const requestEme = async () => {
-
-    var myHeaders = new Headers();
-    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
-    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      "token": `${authToken}`,
-      "source": "PC_Browser",
-      "profileFields": [
-        "idNo",
-        "enName",
-        "chName",
-        "birthDate",
-        "gender"
-      ],
-      "formData": {
-        "formName": "Standard Chartered Credit Card Application Form",
-        "formDesc": "Application for Credit Card",
-        "formNum": "SC_001",
-        "formFields": [
-          "prefix",
-          "maritalStatus",
-          "homeTelNumber",
-          "officeTelNumber",
-          "mobileNumber",
-          "emailAddress",
-          "residentialAddress",
-          "postalAddress",
-          "educationLevel",
-          "addressDocInfo"
-        ]
-      }
-    });
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    };
-
-    fetch("https://dev.fill-easy.com/iamsmart/request/eme", requestOptions)
-      .then(response => response.text())
-      .then(result => {
-        const res = JSON.parse(result)
-        console.log("Response for Profile norm api", res);
-        // console.log("Token data", token);
-        const token = res?.token;
-        // setLoader(true);
-        // redirectToIams(url);
-        if (res.status) {
-          navigation.navigate('Profile', { token: token })
-        }
-      })
-      .catch(error => console.log('error', error));
-  }
-
   const resetEverything = () => {
     AsyncStorage.clear();
     dispatch({
@@ -155,7 +94,7 @@ const Login = () => {
                     paddingVertical: 15,
                     borderRadius: 33,
                   }}
-                  onPress={() => requestEme()}
+                  onPress={() => navigation.navigate('Profile', { token1: 'token1' })}
                 >
                   <Text
                     style={{ fontSize: 24, fontFamily: "PTSans-Bold", color: "white" }}

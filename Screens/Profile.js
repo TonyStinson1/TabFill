@@ -28,13 +28,14 @@ const Profile = ({ route }) => {
   const [number, setNumber] = useState("");
   const [billadd, setBilladd] = useState("");
 
-  const { token } = route.params;
+  const { token1 } = route.params;
   const data = useSelector(state => state);
 
   const dispatch = useDispatch();
 
   const profileToken = useSelector((state) => state.userInfo.profileToken);
   const nprofileToken = useSelector((state) => state.userInfo.normProfileToken);
+  const authToken = useSelector((state) => state.userInfo.authToken);
 
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -179,7 +180,65 @@ const Profile = ({ route }) => {
   }
 
   const navToBasic = () => {
-    navigation.navigate('Basicinformtion', { token: token })
+  }
+
+  const requestEme = async () => {
+
+    var myHeaders = new Headers();
+    myHeaders.append("x-client-id", "cd89d333a7ec42d288421971dfb02d1d");
+    myHeaders.append("x-client-secret", "9b7a597d7a574d439566b259c5d67281a9829404e9024b20b1f42d5e99bb0673");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "token": `${authToken}`,
+      "source": "PC_Browser",
+      "profileFields": [
+        "idNo",
+        "enName",
+        "chName",
+        "birthDate",
+        "gender"
+      ],
+      "formData": {
+        "formName": "Standard Chartered Credit Card Application Form",
+        "formDesc": "Application for Credit Card",
+        "formNum": "SC_001",
+        "formFields": [
+          "prefix",
+          "maritalStatus",
+          "homeTelNumber",
+          "officeTelNumber",
+          "mobileNumber",
+          "emailAddress",
+          "residentialAddress",
+          "postalAddress",
+          "educationLevel",
+          "addressDocInfo"
+        ]
+      }
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://dev.fill-easy.com/iamsmart/request/eme", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        console.log("Response for Profile norm api", res);
+        // console.log("Token data", token);
+        const token = res?.token;
+        // setLoader(true);
+        // redirectToIams(url);
+        if (res.status) {
+          navigation.navigate('Basicinformtion', { token: token })
+        }
+      })
+      .catch(error => console.log('error', error));
   }
 
   if (isModalVisible) {
@@ -190,7 +249,7 @@ const Profile = ({ route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Formtheme text={"User Profile"}
-        handlenav={route.params.token ? navToBasic : requestEmeAnon}
+        handlenav={route.params.token1 ? requestEme : requestEmeAnon}
         bottomtext={"Personal data with iAM Smart"}>
         <View style={{ flex: 1, zIndex: -999, paddingHorizontal: 50, marginTop: -50 }}>
           <ScrollView style={{ flex: 1 }}>
