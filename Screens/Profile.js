@@ -57,7 +57,7 @@ const Profile = ({ route }) => {
       <Modal isVisible={isModalVisible}>
         <Modals.Container>
           <View style={{ height: '15%', justifyContent: 'center', backgroundColor: '#c49b33' }}>
-            <Modals.Header title='Login application with "iAM SMART"' />
+            <Modals.Header title='Authorise "iAM Smart" to provide personal information' />
           </View>
           <View style={{ ...styles.modal, width: '100%', height: '60%' }}>
             <View style={{ marginLeft: 30, marginTop: 25, }}>
