@@ -132,9 +132,9 @@ const Profile = ({ route }) => {
         "gender"
       ],
       "formData": {
-        "formName": "Standard Chartered Credit Card Application Form",
+        "formName": "Loan Application Form",
         "formNum": "SC_001",
-        "formDesc": "Application for Credit Card",
+        "formDesc": "Application for Loan",
         "formFields": [
           "prefix",
           "maritalStatus",
@@ -200,8 +200,8 @@ const Profile = ({ route }) => {
         "gender"
       ],
       "formData": {
-        "formName": "Standard Chartered Credit Card Application Form",
-        "formDesc": "Application for Credit Card",
+        "formName": "Loan Application Form",
+        "formDesc": "Application for Loan",
         "formNum": "SC_001",
         "formFields": [
           "prefix",
