@@ -7,12 +7,12 @@
 //  */
 
 import React, { useEffect } from "react";
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import configureStore from "./Screens/redux/store";
 
 import { NavigationContainer } from "@react-navigation/native";
 import RequestLogin from "./Screens/Requestlogin";
-import { Text, View , Linking } from "react-native";
+import { Text, View, Linking } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Scanqrcode from "./Screens/Scanqrcode";
 import Login from "./Screens/Login";
@@ -29,12 +29,14 @@ const store = configureStore();
 
 const App = () => {
 
-  return (
-    <Provider store={store}>
+    return ( <
+        Provider store = { store } >
 
-      <Rootnavigation />
-       </Provider>
-  );
+        <
+        Rootnavigation / >
+        <
+        /Provider>
+    );
 };
 
 export default App;
